@@ -28,6 +28,9 @@ connectDB()
 app.use(express.json())
 
 app.use(express.static("public"))
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/chat.html");
+});
 
 /* -------------------- IMAGE UPLOAD SETUP -------------------- */
 
@@ -66,6 +69,7 @@ imageUrl: "/uploads/" + req.file.filename
 /* -------------------- STATIC UPLOADS -------------------- */
 
 app.use("/uploads", express.static("uploads"))
+
 
 /* -------------------- SOCKET -------------------- */
 
