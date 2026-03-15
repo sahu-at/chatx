@@ -1,73 +1,170 @@
 body{
-
 margin:0;
 font-family:Arial;
-
+background:#e5ddd5;
 }
 
-.container{
-
+.app{
 display:flex;
 height:100vh;
-
 }
 
+/* SIDEBAR */
+
 .sidebar{
-
-width:25%;
-background:#ededed;
-padding:10px;
+width:30%;
+background:#111b21;
+color:white;
 overflow:auto;
+}
 
+.sidebar-header{
+padding:10px;
+background:#202c33;
+}
+
+.sidebar-header input{
+width:100%;
+padding:8px;
+margin-top:5px;
+border:none;
+border-radius:5px;
+}
+
+/* USERS */
+
+.users div{
+padding:12px;
+display:flex;
+align-items:center;
+cursor:pointer;
+border-bottom:1px solid #222;
+}
+
+.users div:hover
+
+.users img{
+width:35px;
+height:35px;
+border-radius:50%;
+margin-right:10px;
+}
+
+.badge{
+background:red;
+color:white;
+border-radius:50%;
+padding:3px 7px;
+font-size:11px;
+margin-left:auto;
+}
+
+/* CHAT */
+
+.chat{
+width:70%;
+display:flex;
+flex-direction:column;
+}
+
+.chat-header{
+background:#202c33;
+color:white;
+padding:10px;
+display:flex;
+align-items:center;
+}
+
+.chat-header img{
+width:40px;
+height:40px;
+border-radius:50%;
+margin-right:10px;
+}
+
+.typing{
+font-size:12px;
+color:#00a884;
+}
+
+/* MESSAGES */
+
+.messages{
+flex:1;
+overflow:auto;
+padding:20px;
+display:flex;
+flex-direction:column;
+}
+
+.messageBubble{
+max-width:60%;
+padding:10px;
+border-radius:8px;
+margin:5px;
+position:relative;
+}
+
+.myMessage{
+background:#005c4b;
+color:white;
+margin-left:auto;
+}
+
+.otherMessage{
+background:white;
+}
+
+.meta{
+font-size:10px;
+opacity:0.7;
+margin-top:3px;
+text-align:right;
+}
+
+/* REPLY */
+
+.replyBox{
+background:#eee;
+padding:5px 10px;
+display:flex;
+justify-content:space-between;
+}
+
+/* INPUT */
+
+.chat-input{
+display:flex;
+align-items:center;
+padding:10px;
+background:#202c33;
+gap:5px;
+}
+
+.chat-input input{
+flex:1;
+padding:10px;
+border:none;
+border-radius:5px;
+}
+
+.chat-input button{
+padding:8px 12px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.sidebar{
+display:none;
 }
 
 .chat{
-
-width:75%;
-display:flex;
-flex-direction:column;
-
+width:100%;
 }
-
-.messages{
-
-flex:1;
-overflow:auto;
-padding:10px;
-
-}
-
-.sendBox{
-
-display:flex;
-padding:10px;
-border-top:1px solid #ccc;
-
-}
-
-.sendBox input{
-
-flex:1;
-padding:10px;
-
-}
-
-.sendBox button{
-
-padding:10px;
-
-}
-
-#users div{
-
-padding:10px;
-border-bottom:1px solid #ccc;
-cursor:pointer;
-
-}
-
-#users div:hover{
-
-background:#ddd;
 
 }

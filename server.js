@@ -6,6 +6,8 @@ const { Server } = require("socket.io")
 const mongoose = require("mongoose")
 const multer = require("multer")
 const path = require("path")
+const fs = require("fs")
+const cors = require("cors")
 
 const connectDB = require("./config/db")
 
@@ -19,18 +21,42 @@ const chatSocket = require("./sockets/chatSocket")
 
 const app = express()
 
-const server = http.createServer(app)
+/* -------------------- MIDDLEWARE -------------------- */
 
-const io = new Server(server)
+app.use(express.json())
+app.use(cors())
+
+/* -------------------- DATABASE -------------------- */
 
 connectDB()
 
-app.use(express.json())
+/* -------------------- SERVER -------------------- */
+
+const server = http.createServer(app)
+
+const io = new Server(server,{
+cors:{
+origin:"*",
+methods:["GET","POST"]
+}
+})
+
+/* -------------------- CREATE UPLOAD FOLDER -------------------- */
+
+if(!fs.existsSync("uploads")){
+fs.mkdirSync("uploads")
+}
+
+/* -------------------- STATIC FILES -------------------- */
 
 app.use(express.static("public"))
+app.use("/uploads", express.static("uploads"))
+
+/* -------------------- HOME PAGE -------------------- */
+
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/chat.html");
-});
+res.sendFile(__dirname + "/public/chat.html")
+})
 
 /* -------------------- IMAGE UPLOAD SETUP -------------------- */
 
@@ -48,14 +74,6 @@ cb(null, Date.now() + path.extname(file.originalname))
 
 const upload = multer({ storage })
 
-/* -------------------- ROUTES -------------------- */
-
-app.use("/api/auth", authRoutes)
-app.use("/api/users", userRoutes)
-app.use("/api/messages", messageRoutes)
-app.use("/api/status", statusRoutes)
-app.use("/api/groups", groupRoutes)
-
 /* -------------------- IMAGE UPLOAD API -------------------- */
 
 app.post("/upload", upload.single("image"), (req, res) => {
@@ -66,10 +84,19 @@ imageUrl: "/uploads/" + req.file.filename
 
 })
 
-/* -------------------- STATIC UPLOADS -------------------- */
+/* -------------------- ROUTES -------------------- */
 
-app.use("/uploads", express.static("uploads"))
+app.use("/api/auth", authRoutes)
+app.use("/api/users", userRoutes)
+app.use("/api/messages", messageRoutes)
+app.use("/api/status", statusRoutes)
+app.use("/api/groups", groupRoutes)
 
+/* -------------------- API HEALTH CHECK -------------------- */
+
+app.get("/api",(req,res)=>{
+res.json({msg:"ChatX API running"})
+})
 
 /* -------------------- SOCKET -------------------- */
 
@@ -77,6 +104,8 @@ chatSocket(io)
 
 /* -------------------- SERVER START -------------------- */
 
-server.listen(3000, () => {
-console.log("Server running on port 3000")
+const PORT = process.env.PORT || 3000
+
+server.listen(PORT, () => {
+console.log("🚀 ChatX Server running on port",PORT)
 })

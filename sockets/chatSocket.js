@@ -15,7 +15,6 @@ socket.on("join", async (username)=>{
 
 users[socket.id] = username
 
-// update online status
 await User.updateOne(
 {username},
 {online:true}
@@ -38,15 +37,44 @@ socket.broadcast.emit("typing",data)
 socket.on("sendMessage", async (data)=>{
 
 const msg = new Message({
+
 sender:data.sender,
 receiver:data.receiver,
 message:data.message,
-type:data.type || "text"
+type:data.type || "text",
+status:"sent",
+createdAt:new Date()
+
 })
 
 await msg.save()
 
+/* SEND TO RECEIVER */
+
 io.emit("receiveMessage",msg)
+
+/* UPDATE STATUS DELIVERED */
+
+msg.status="delivered"
+
+await msg.save()
+
+io.emit("messageDelivered",{
+id:msg._id
+})
+
+})
+
+/* -------- MESSAGE SEEN -------- */
+
+socket.on("messageSeen", async (data)=>{
+
+await Message.updateOne(
+{_id:data.id},
+{status:"seen"}
+)
+
+io.emit("messageSeen",data)
 
 })
 
@@ -58,7 +86,8 @@ let username = users[socket.id]
 
 delete users[socket.id]
 
-// update last seen
+if(username){
+
 await User.updateOne(
 {username},
 {
@@ -66,6 +95,8 @@ online:false,
 lastSeen:new Date()
 }
 )
+
+}
 
 io.emit("onlineUsers",Object.values(users))
 

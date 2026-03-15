@@ -1,187 +1,55 @@
-const socket = io()
+<!DOCTYPE html>
 
-let currentUser = "user1"
-let currentChat = ""
+<html>
 
+<head>
+<meta charset="UTF-8">
+<title>ChatX</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
 
-// JOIN SOCKET
-socket.emit("join", currentUser)
+<body>
 
-
-
-function loadUsers(){
-
-fetch("/api/users")
-.then(res=>res.json())
-.then(data=>{
-
-let usersDiv=document.getElementById("users")
-
-usersDiv.innerHTML=""
-
-data.forEach(u=>{
-
-let div=document.createElement("div")
-
-/* ----- PROFILE PHOTO ----- */
-
-let img=document.createElement("img")
-img.src=u.profilePic || "/default.png"
-img.style.width="30px"
-img.style.height="30px"
-img.style.borderRadius="50%"
-img.style.marginRight="10px"
-
-/* ----- USERNAME ----- */
-
-let span=document.createElement("span")
-span.innerText=u.username
-
-div.appendChild(img)
-div.appendChild(span)
-
-div.onclick=()=>openChat(u.username)
-
-usersDiv.appendChild(div)
-
-})
-
-})
-
+<script>
+if(!localStorage.getItem("token")){
+window.location="/login.html"
 }
+</script>
 
+<div class="app">
 
+<div class="sidebar">
 
-function openChat(username){
+<div class="sidebar-header">
+<h2>ChatX</h2>
+<button id="logoutBtn">Logout</button>
+</div>
 
-currentChat=username
+<div id="users"></div>
 
-document.getElementById("chatWith").innerText=username
+</div>
 
-fetch(`/api/messages/${currentUser}/${username}`)
-.then(res=>res.json())
-.then(data=>{
+<div class="chat">
 
-let chat=document.getElementById("messages")
+<div class="chat-header">
+<span id="chatWith">Select Chat</span>
+<div id="typing"></div>
+</div>
 
-chat.innerHTML=""
+<div id="messages"></div>
 
-data.forEach(m=>{
+<div class="chat-input">
+<input id="msg" placeholder="Type message">
+<button onclick="sendMessage()">Send</button>
+</div>
 
-let div=document.createElement("div")
+</div>
 
-/* ----- IMAGE MESSAGE ----- */
+</div>
 
-if(m.type==="image"){
+<script src="/socket.io/socket.io.js"></script>
 
-let img=document.createElement("img")
-img.src=m.message
-img.style.width="150px"
+<script src="/js/chat.js"></script>
 
-div.appendChild(img)
-
-}else{
-
-div.innerText=m.message
-
-}
-
-chat.appendChild(div)
-
-})
-
-})
-
-}
-
-
-
-function sendMessage(){
-
-let input=document.getElementById("msg")
-
-let msg=input.value
-
-socket.emit("sendMessage",{
-
-sender:currentUser,
-receiver:currentChat,
-message:msg,
-type:"text"
-
-})
-
-input.value=""
-
-}
-
-
-
-/* ----- RECEIVE MESSAGE ----- */
-
-socket.on("receiveMessage",(data)=>{
-
-if(data.receiver===currentUser || data.sender===currentUser){
-
-let div=document.createElement("div")
-
-if(data.type==="image"){
-
-let img=document.createElement("img")
-img.src=data.message
-img.style.width="150px"
-
-div.appendChild(img)
-
-}else{
-
-div.innerText=data.message
-
-}
-
-document.getElementById("messages").appendChild(div)
-
-}
-
-})
-
-
-
-/* ----- TYPING INDICATOR ----- */
-
-document.getElementById("msg").addEventListener("input",()=>{
-
-socket.emit("typing",{
-user:currentUser
-})
-
-})
-
-
-socket.on("typing",(data)=>{
-
-let typingDiv=document.getElementById("typing")
-
-typingDiv.innerText=data.user+" is typing..."
-
-setTimeout(()=>{
-
-typingDiv.innerText=""
-
-},1000)
-
-})
-
-
-
-/* ----- ONLINE USERS ----- */
-
-socket.on("onlineUsers",(data)=>{
-
-console.log("Online Users:",data)
-
-})
-
-
-
-loadUsers()
+</body>
+</html>

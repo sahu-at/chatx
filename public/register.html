@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>ChatX Register</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#075e54,#25d366);
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.container{
+background:white;
+padding:30px;
+width:350px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#25d366;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#1da851;
+}
+
+.link{
+text-align:center;
+margin-top:10px;
+}
+
+.link a{
+color:#075e54;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Create Account</h2>
+
+<form id="registerForm">
+
+<input type="text" id="username" placeholder="Username" required>
+
+<input type="email" id="email" placeholder="Email" required>
+
+<input type="text" id="phone" placeholder="Phone Number" required>
+
+<input type="password" id="password" placeholder="Password" required>
+
+<input type="file" id="profile">
+
+<button type="submit">Register</button>
+
+</form>
+
+<div class="link">
+
+Already have account? <a href="/public/login.html">Login</a>
+
+</div>
+
+</div>
+
+<script>
+    if(localStorage.getItem("token")){
+
+window.location="/public/chat.html"
+
+}
+
+document.getElementById("registerForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const username=document.getElementById("username").value
+const email=document.getElementById("email").value
+const phone=document.getElementById("phone").value
+const password=document.getElementById("password").value
+
+const res = await fetch("/api/auth/register",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+username,
+email,
+phone,
+password
+
+})
+
+})
+
+const data=await res.json()
+
+alert(data.msg)
+
+if(data.msg==="User created"){
+
+window.location="/login.html"
+
+}
+
+})
+
+</script>
+
+</body>
+
+</html>
