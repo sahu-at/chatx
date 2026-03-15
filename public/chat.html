@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>ChatX</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LEFT SIDEBAR -->
+<div class="sidebar">
+
+<h3>Users</h3>
+
+<input id="search" placeholder="Search user">
+
+<div id="users"></div>
+
+</div>
+
+
+
+<!-- RIGHT CHAT AREA -->
+<div class="chat">
+
+<!-- CHAT HEADER -->
+<h3 id="chatWith">Select User</h3>
+
+<!-- TYPING INDICATOR -->
+<div id="typing" style="color:green; padding-left:10px;"></div>
+
+<!-- MESSAGES -->
+<div id="messages" class="messages"></div>
+
+
+<!-- MESSAGE INPUT -->
+<div class="sendBox">
+
+<input id="msg" placeholder="Type a message">
+
+<button onclick="sendMessage()">Send</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SOCKET -->
+<script src="/socket.io/socket.io.js"></script>
+
+<!-- CHAT SCRIPT -->
+<script src="/js/chat.js"></script>
+
+</body>
+
+</html>
